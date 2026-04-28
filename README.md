@@ -1,6 +1,6 @@
 # 🔍 Détection de Fraude sur Transactions Bancaires
 
-Projet complet de Machine Learning pour détecter les transactions frauduleuses dans un dataset de 284 807 transactions bancaires. De l'exploration des données au déploiement d'un modèle interprétable.
+Projet complet de Machine Learning — de l'exploration des données au déploiement d'une API en temps réel avec interface web. Détection de transactions frauduleuses sur un dataset de 284 807 transactions bancaires.
 
 ## 📊 Résultats clés
 
@@ -15,10 +15,23 @@ Projet complet de Machine Learning pour détecter les transactions frauduleuses 
 
 Le modèle détecte **85% des fraudes** avec seulement **12 fausses alertes** sur 56 962 transactions.
 
+## 🖥️ Démo — Interface web
+
+L'interface permet d'analyser une transaction en temps réel et d'obtenir :
+- Le verdict (FRAUDE / LÉGITIME) avec la probabilité
+- Les facteurs de décision SHAP : quelles features ont influencé la prédiction
+
+> Pour lancer la démo, voir la section **Reproduire le projet** ci-dessous.
+
 ## 🗂️ Structure du projet
 
 ```
 Detection_Fraude/
+├── api/
+│   ├── app.py                     # API FastAPI (endpoint /predict)
+│   └── model.pkl                  # Modèle XGBoost sauvegardé
+├── frontend/
+│   └── index.html                 # Interface web de démonstration
 ├── data/                          # Dataset (non versionné)
 │   └── creditcard.csv
 ├── notebooks/
@@ -73,6 +86,10 @@ Quatre stratégies testées :
 - Les résultats SHAP confirment les observations de l'EDA
 - Explication transaction par transaction pour justifier chaque alerte
 
+### Étape 7 — Déploiement (API + Frontend)
+- **API REST** avec FastAPI : endpoint `/predict` qui reçoit une transaction et renvoie le verdict avec les explications SHAP en temps réel
+- **Interface web** : dashboard pour tester le modèle visuellement avec affichage du verdict, de la probabilité et des facteurs de décision
+
 ## ⚙️ Technologies utilisées
 
 - **Python 3.12**
@@ -81,6 +98,8 @@ Quatre stratégies testées :
 - **Machine Learning** : Scikit-learn, XGBoost, Imbalanced-learn
 - **Deep Learning** : TensorFlow/Keras (Autoencoder)
 - **Interprétabilité** : SHAP
+- **API** : FastAPI, Uvicorn
+- **Frontend** : HTML, CSS, JavaScript
 
 ## 🚀 Reproduire le projet
 
@@ -104,6 +123,18 @@ pip install -r requirements.txt
 # 5. Exécuter les notebooks dans l'ordre (01 → 05)
 ```
 
+### Lancer l'API et le frontend
+
+```bash
+# Terminal 1 : lancer l'API
+cd api
+uvicorn app:app --reload
+
+# Terminal 2 : ouvrir le frontend
+# Ouvrir frontend/index.html dans un navigateur
+# L'API doit tourner sur http://127.0.0.1:8000
+```
+
 ## 📈 Ce que j'ai appris
 
 - **Gestion du déséquilibre** : l'accuracy est trompeuse sur des données déséquilibrées. Le F1-Score et l'AUC-ROC sont les métriques pertinentes.
@@ -111,6 +142,7 @@ pip install -r requirements.txt
 - **Supervisé vs Non supervisé** : le supervisé domine quand les labels existent, mais le non supervisé détecte les anomalies inédites. Les deux sont complémentaires.
 - **Interprétabilité** : SHAP transforme une boîte noire en décision explicable — indispensable dans le secteur bancaire.
 - **Feature engineering** : transformer Time en heure de la journée a créé une feature exploitée par le modèle (visible dans SHAP).
+- **Déploiement** : un modèle dans un notebook ne sert à rien. FastAPI permet de le rendre accessible en temps réel via une API REST.
 
 ## 📝 Dataset
 
